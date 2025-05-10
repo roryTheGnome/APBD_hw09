@@ -1,6 +1,18 @@
-﻿namespace WebApplication3.Controllers;
+﻿using Microsoft.AspNetCore.Mvc;
 
-public class WarehouseController
+namespace WebApplication3.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class WarehouseController:ControllerBase
 {
+    private readonly IConfiguration _configuration;
+
+    public WarehouseController(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+    
+    
     
 }
