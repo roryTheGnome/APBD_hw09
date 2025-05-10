@@ -115,4 +115,34 @@ public class WarehouseController:ControllerBase
 
     }
 
+
+
+    [HttpPost("stored")]
+    public async Task<IActionResult> RegisterProductWithProcedure([FromBody] Product_Warehouse req,
+        CancellationToken token)//this one is for task 2 but idk what is "*" next to the name means , i did it the 'normal way' hope thats cool
+    {
+        await using var con = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        await using var com = new SqlCommand("AddProductToWarehouse", con)
+        {
+            CommandType = System.Data.CommandType.StoredProcedure
+        };
+        
+        com.Parameters.AddWithValue("@IdProduct", req.IdProduct);
+        com.Parameters.AddWithValue("@IdWarehouse", req.IdWarehouse);
+        com.Parameters.AddWithValue("@Amount", req.Amount);
+        com.Parameters.AddWithValue("@CreatedAt", req.CreatedAt);
+        
+        await con.OpenAsync(token);
+
+        try
+        {
+            var result = await com.ExecuteScalarAsync(token);
+            return Ok("Done");
+        }
+        catch (SqlException ex)
+        {
+            return StatusCode(400, $"Errror: {ex.Message}");
+        }
+    }
+
 }
